@@ -25,42 +25,42 @@ function doit(D, text, du, u)
   show(stdout, MIME&quot;text/plain&quot;(), @benchmark mul!($du, $D, $u))
   println()
 end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">doit (generic function with 1 method)</code></pre><p>First, we benchmark the implementation from SummationByPartsOperators.jl.</p><pre><code class="language-julia hljs">doit(D_SBP, &quot;D_SBP:&quot;, du, u)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">D_SBP:
-BenchmarkTools.Trial: 10000 samples with 986 evaluations.
- Range (min … max):  51.419 ns … 99.593 ns  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     52.941 ns              ┊ GC (median):    0.00%
- Time  (mean ± σ):   53.015 ns ±  0.804 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+BenchmarkTools.Trial: 10000 samples with 981 evaluations.
+ Range (min … max):  59.836 ns … 106.727 ns  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     60.651 ns               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   60.776 ns ±   1.323 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-                ▆█▁
-  ▂▂▂▂▂▂▂▁▂▂▂▂▄████▃▂▂▂▁▁▁▁▁▁▁▂▂▂▂▂▂▂▂▁▁▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂▂▂▂▂ ▂
-  51.4 ns         Histogram: frequency by time        57.4 ns &lt;
+  ▁▁▂▂▄▆██▇▄▁                                                  ▂
+  ███████████▇▆▆▇▇▆▇▆▅▇▇▆▅▅▃▄▁▁▁▁▁▁▁▁▁▁▁▁▁▃▁▁▃▄▁▃▃▃▅▅▅▆▆▆▆▅▆▆▆ █
+  59.8 ns       Histogram: log(frequency) by time      66.4 ns &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.</code></pre><p>Next, we compare this to the runtime obtained using a sparse matrix representation of the derivative operator. Depending on the hardware etc., this can be an order of magnitude slower than the optimized implementation from SummationByPartsOperators.jl.</p><pre><code class="language-julia hljs">doit(D_sparse, &quot;D_sparse:&quot;, du, u)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">D_sparse:
-BenchmarkTools.Trial: 10000 samples with 205 evaluations.
- Range (min … max):  376.580 ns … 558.532 ns  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     378.044 ns               ┊ GC (median):    0.00%
- Time  (mean ± σ):   379.172 ns ±   4.985 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+BenchmarkTools.Trial: 10000 samples with 257 evaluations.
+ Range (min … max):  300.385 ns … 494.934 ns  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     302.331 ns               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   303.000 ns ±   4.655 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-  ▄▇██▇ ▅▁             ▁  ▁▂▂ ▃▂▂▂                              ▂
-  █████▁██▇▆▄▁▄▁▁▁▁▁▁▆▆█▁████▁████▇▁▄▁▁▃▁▁▃▁▁▁▁▁▁▁▁▁▁▁▁▃▄▁▇███▆ █
-  377 ns        Histogram: log(frequency) by time        401 ns &lt;
+   █▆ ▂█  ▁
+  ▃██▅██▆▄█▄▃▄▅▅▄▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂▂▂▂▂▂▂▂▂▂▂▂▂ ▃
+  300 ns           Histogram: frequency by time          324 ns &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.</code></pre><p>Finally, we benchmark the implementation of the same derivative operator in DiffEqOperators.jl.</p><pre><code class="language-julia hljs">doit(D_DEO, &quot;D_DEO:&quot;, du, u)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">D_DEO:
 ┌ Warning: #= /home/runner/.julia/packages/DiffEqOperators/TA56x/src/derivative_operators/convolutions.jl:412 =#:
 │ `LoopVectorization.check_args` on your inputs failed; running fallback `@inbounds @fastmath` loop instead.
 │ Use `warn_check_args=false`, e.g. `@turbo warn_check_args=false ...`, to disable this warning.
-└ @ DiffEqOperators ~/.julia/packages/LoopVectorization/dniw3/src/condense_loopset.jl:1065
+└ @ DiffEqOperators ~/.julia/packages/LoopVectorization/F9yqC/src/condense_loopset.jl:1065
 ┌ Warning: #= /home/runner/.julia/packages/DiffEqOperators/TA56x/src/derivative_operators/convolutions.jl:460 =#:
 │ `LoopVectorization.check_args` on your inputs failed; running fallback `@inbounds @fastmath` loop instead.
 │ Use `warn_check_args=false`, e.g. `@turbo warn_check_args=false ...`, to disable this warning.
-└ @ DiffEqOperators ~/.julia/packages/LoopVectorization/dniw3/src/condense_loopset.jl:1065
+└ @ DiffEqOperators ~/.julia/packages/LoopVectorization/F9yqC/src/condense_loopset.jl:1065
 BenchmarkTools.Trial: 10000 samples with 10 evaluations.
- Range (min … max):  1.050 μs …   5.750 μs  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     1.090 μs               ┊ GC (median):    0.00%
- Time  (mean ± σ):   1.124 μs ± 101.506 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Range (min … max):  1.050 μs …  2.640 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     1.090 μs              ┊ GC (median):    0.00%
+ Time  (mean ± σ):   1.122 μs ± 94.368 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-     ▃ █▆ ▂
-  ▂▄▁█▁██▁█▁▇▄▁▃▁▃▃▁▂▁▂▂▁▂▁▂▂▁▂▁▂▁▂▂▁▃▁▃▃▁▃▁▃▃▁▃▁▂▂▁▂▁▂▂▁▂▁▂▂ ▃
-  1.05 μs         Histogram: frequency by time         1.4 μs &lt;
+   ▅ ██ ▇ ▆▅ ▄ ▄▃ ▂ ▁              ▂▄ ▄ ▃▃ ▃ ▂▂ ▁ ▁          ▂
+  ▇█▁██▁█▁██▁█▁██▁█▁██▁▇▁▆▆▁▆▁▅▅▁█▁██▁█▁██▁█▁██▁█▁██▁█▁▆▇▁█▆ █
+  1.05 μs      Histogram: log(frequency) by time      1.4 μs &lt;
 
  Memory estimate: 416 bytes, allocs estimate: 6.</code></pre><p>These results were obtained using the following versions.</p><pre><code class="language-julia hljs">using InteractiveUtils
 versioninfo()
@@ -77,7 +77,7 @@ Platform Info:
   LLVM: libLLVM-11.0.1 (ORCJIT, icelake-server)
       Status `~/work/SummationByPartsOperators.jl/SummationByPartsOperators.jl/docs/Manifest.toml`
   [9fdde737] DiffEqOperators v4.44.0
-  [9f78cca6] SummationByPartsOperators v0.5.27 `~/work/SummationByPartsOperators.jl/SummationByPartsOperators.jl`</code></pre><h4 id="Bounded-domains"><a class="docs-heading-anchor" href="#Bounded-domains">Bounded domains</a><a id="Bounded-domains-1"></a><a class="docs-heading-anchor-permalink" href="#Bounded-domains" title="Permalink"></a></h4><p>We start again by setting up some benchmark code.</p><pre><code class="language-julia hljs">using BenchmarkTools
+  [9f78cca6] SummationByPartsOperators v0.5.28 `~/work/SummationByPartsOperators.jl/SummationByPartsOperators.jl`</code></pre><h4 id="Bounded-domains"><a class="docs-heading-anchor" href="#Bounded-domains">Bounded domains</a><a id="Bounded-domains-1"></a><a class="docs-heading-anchor-permalink" href="#Bounded-domains" title="Permalink"></a></h4><p>We start again by setting up some benchmark code.</p><pre><code class="language-julia hljs">using BenchmarkTools
 using LinearAlgebra, SparseArrays
 using SummationByPartsOperators, BandedMatrices
 
@@ -100,34 +100,34 @@ function doit(D, text, du, u)
   show(stdout, MIME&quot;text/plain&quot;(), @benchmark mul!($du, $D, $u))
   println()
 end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">doit (generic function with 1 method)</code></pre><p>First, we benchmark the implementation from SummationByPartsOperators.jl.</p><pre><code class="language-julia hljs">doit(D_SBP, &quot;D_SBP:&quot;, du, u)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">D_SBP:
-BenchmarkTools.Trial: 10000 samples with 141 evaluations.
- Range (min … max):  708.504 ns … 1.107 μs  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     709.213 ns             ┊ GC (median):    0.00%
- Time  (mean ± σ):   710.383 ns ± 8.265 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+BenchmarkTools.Trial: 10000 samples with 133 evaluations.
+ Range (min … max):  724.797 ns … 1.097 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     727.060 ns             ┊ GC (median):    0.00%
+ Time  (mean ± σ):   728.654 ns ± 8.737 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-  ▅█▅                                                         ▁
-  ███▄▃▁▁▁▁▁▁▁▁▁▁▁▁▁▅▇▇▇▆▁▅▁▅▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▅▇▁██▇▇▆ █
-  709 ns       Histogram: log(frequency) by time       743 ns &lt;
+  ▃▆██▆▃                                                      ▂
+  ██████▇▄▁▃▁▁▁▁▁▁▄▆▇█▇▇▆▃▄▄▁▁▁▁▁▃▁▁▁▁▁▁▃▁▁▁▁▁▁▁▃▁▅▆▇▇▇▆▆▇▆▆▇ █
+  725 ns       Histogram: log(frequency) by time       770 ns &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.</code></pre><p>Again, we compare this to a representation of the derivative operator as a sparse matrix. No surprise - it is again much slower, as in periodic domains.</p><pre><code class="language-julia hljs">doit(D_sparse, &quot;D_sparse:&quot;, du, u)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">D_sparse:
 BenchmarkTools.Trial: 10000 samples with 5 evaluations.
- Range (min … max):  6.180 μs …  11.480 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Range (min … max):  6.180 μs …  10.920 μs  ┊ GC (min … max): 0.00% … 0.00%
  Time  (median):     6.200 μs               ┊ GC (median):    0.00%
- Time  (mean ± σ):   6.204 μs ± 112.464 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Time  (mean ± σ):   6.211 μs ± 112.166 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-  ▂  █
-  █▁▁█▁▁▁▄▁▁▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂▁▁▂ ▂
-  6.18 μs         Histogram: frequency by time         6.5 μs &lt;
+     █
+  ▆▁▁█▁▁▆▁▁▁▂▁▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂▁▁▂ ▂
+  6.18 μs         Histogram: frequency by time        6.52 μs &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.</code></pre><p>FInally, we compare it to a representation as banded matrix. Disappointingly, this is still much slower than the optimized implementation from SummationByPartsOperators.jl.</p><pre><code class="language-julia hljs">doit(D_banded, &quot;D_banded:&quot;, du, u)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">D_banded:
 BenchmarkTools.Trial: 10000 samples with 3 evaluations.
- Range (min … max):  8.667 μs …  13.766 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Range (min … max):  8.633 μs …  12.533 μs  ┊ GC (min … max): 0.00% … 0.00%
  Time  (median):     8.733 μs               ┊ GC (median):    0.00%
- Time  (mean ± σ):   8.789 μs ± 183.316 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Time  (mean ± σ):   8.768 μs ± 182.597 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-    ▆ █  ▇ ▄  ▃ ▄  ▄ ▂  ▁ ▂  ▁ ▂ ▁                            ▂
-  ▅▁█▁█▁▁█▁█▁▁█▁█▁▁█▁█▁▁█▁█▁▁█▁█▁█▁▁▇▁▅▁▁▆▁▆▁▁▇▁▆▁▁▅▁▅▁▁▄▁▅▁▃ █
-  8.67 μs      Histogram: log(frequency) by time      9.47 μs &lt;
+     ▆  █  ▇   ▆  ▅  ▅  ▃   ▂  ▃  ▂   ▃  ▂                    ▂
+  ▃▁▁█▁▁█▁▁█▁▁▁█▁▁█▁▁█▁▁█▁▁▁█▁▁█▁▁█▁▁▁█▁▁█▁▁█▁▁▇▁▁▁█▁▁▇▁▁█▁▁▆ █
+  8.63 μs      Histogram: log(frequency) by time      9.23 μs &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.</code></pre><p>These results were obtained using the following versions.</p><pre><code class="language-julia hljs">using InteractiveUtils
 versioninfo()
@@ -144,7 +144,7 @@ Platform Info:
   LLVM: libLLVM-11.0.1 (ORCJIT, icelake-server)
       Status `~/work/SummationByPartsOperators.jl/SummationByPartsOperators.jl/docs/Manifest.toml`
   [aae01518] BandedMatrices v0.17.9
-  [9f78cca6] SummationByPartsOperators v0.5.27 `~/work/SummationByPartsOperators.jl/SummationByPartsOperators.jl`</code></pre><h2 id="Dissipation-operators"><a class="docs-heading-anchor" href="#Dissipation-operators">Dissipation operators</a><a id="Dissipation-operators-1"></a><a class="docs-heading-anchor-permalink" href="#Dissipation-operators" title="Permalink"></a></h2><p>We follow the same structure as before. At first, we set up some benchmark code.</p><pre><code class="language-julia hljs">using BenchmarkTools
+  [9f78cca6] SummationByPartsOperators v0.5.28 `~/work/SummationByPartsOperators.jl/SummationByPartsOperators.jl`</code></pre><h2 id="Dissipation-operators"><a class="docs-heading-anchor" href="#Dissipation-operators">Dissipation operators</a><a id="Dissipation-operators-1"></a><a class="docs-heading-anchor-permalink" href="#Dissipation-operators" title="Permalink"></a></h2><p>We follow the same structure as before. At first, we set up some benchmark code.</p><pre><code class="language-julia hljs">using BenchmarkTools
 using LinearAlgebra, SparseArrays
 using SummationByPartsOperators, BandedMatrices
 
@@ -170,57 +170,57 @@ function doit(D, text, du, u)
   println()
 end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">doit (generic function with 1 method)</code></pre><p>At first, let us benchmark the derivative and dissipation operators implemented in SummationByPartsOperators.jl.</p><pre><code class="language-julia hljs">doit(D_SBP, &quot;D_SBP:&quot;, du, u)
 doit(Di_SBP, &quot;Di_SBP:&quot;, du, u)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">D_SBP:
-BenchmarkTools.Trial: 10000 samples with 138 evaluations.
- Range (min … max):  718.109 ns … 1.020 μs  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     718.833 ns             ┊ GC (median):    0.00%
- Time  (mean ± σ):   720.143 ns ± 7.089 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+BenchmarkTools.Trial: 10000 samples with 53 evaluations.
+ Range (min … max):  871.679 ns …  1.862 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     873.585 ns              ┊ GC (median):    0.00%
+ Time  (mean ± σ):   878.314 ns ± 27.594 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-  ▃█▇                                                         ▁
-  ████▄▃▁▁▁▁▁▁▁▁▁▁▁▄▇▇▇▆▁▆▄▁▄▁▁▁▁▁▁▁▁▁▁▁▁▁▃▁▁▁▁▁▁▁▁▃▅▁▇▇█▇▇▆▅ █
-  718 ns       Histogram: log(frequency) by time       755 ns &lt;
+  █▇▅  ▁                                                       ▁
+  ███▄██▆▁▄▁▄▄▇▆▅▃▄▁▁▃▁▁▁▃▃▁▁▃▁▄▁▄▃▄▆▃▆▅▆▅▆▅▅▅▅▄▄▃▃▃▄▅▁▃▄▄▃▅▁▅ █
+  872 ns        Histogram: log(frequency) by time      1.04 μs &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.
 Di_SBP:
 BenchmarkTools.Trial: 10000 samples with 10 evaluations.
- Range (min … max):  1.610 μs …  5.640 μs  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     1.630 μs              ┊ GC (median):    0.00%
- Time  (mean ± σ):   1.629 μs ± 70.376 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Range (min … max):  1.650 μs …  7.080 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     1.660 μs              ┊ GC (median):    0.00%
+ Time  (mean ± σ):   1.665 μs ± 69.370 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-                     ▆                  █
-  ▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂ ▂
-  1.61 μs        Histogram: frequency by time        1.64 μs &lt;
+                               █
+  ▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▆█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▆ ▂
+  1.65 μs        Histogram: frequency by time        1.67 μs &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.</code></pre><p>Next, we compare the results to sparse matrix representations. It will not come as a surprise that these are again much (around an order of magnitude) slower.</p><pre><code class="language-julia hljs">doit(Di_sparse, &quot;Di_sparse:&quot;, du, u)
 doit(Di_banded, &quot;Di_banded:&quot;, du, u)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Di_sparse:
 BenchmarkTools.Trial: 10000 samples with 4 evaluations.
- Range (min … max):  7.100 μs …  11.550 μs  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     7.150 μs               ┊ GC (median):    0.00%
- Time  (mean ± σ):   7.174 μs ± 129.677 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Range (min … max):  7.150 μs …  18.775 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     7.200 μs               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   7.213 μs ± 209.226 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-      █  ▆
-  ▂▁▄▁█▁▁█▁▄▁▂▁▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂▁▂▁▂▁▁▂▁▂▁▁▁▁▁▁▁▁▂ ▂
-  7.1 μs          Histogram: frequency by time        7.72 μs &lt;
+     ▁  █
+  ▂▁▁█▁▁█▁▁▆▁▁▁▂▁▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂ ▂
+  7.15 μs         Histogram: frequency by time         7.6 μs &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.
 Di_banded:
 BenchmarkTools.Trial: 10000 samples with 4 evaluations.
- Range (min … max):  7.800 μs …  17.850 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Range (min … max):  7.825 μs …  11.175 μs  ┊ GC (min … max): 0.00% … 0.00%
  Time  (median):     7.875 μs               ┊ GC (median):    0.00%
- Time  (mean ± σ):   7.998 μs ± 275.417 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Time  (mean ± σ):   7.974 μs ± 220.725 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-   ▅█▇▄▃▃▃▃▅▆▃▁▁▂▁▁▃▄   ▁  ▂▂                                 ▂
-  ▃██████████████████████▇▇██▇▇▇▆▅▅█▇▅▃▄▄▄▅▄▄▄▂▂▂▃▄▂▄▄▂▄▄▅▆▄▂ █
-  7.8 μs       Histogram: log(frequency) by time      9.25 μs &lt;
+  ▄█ █ ▆ ▅ ▃ ▃ ▅ ▅ ▄ ▃▄ ▂ ▁ ▃ ▄ ▂ ▁ ▂ ▂    ▂ ▂ ▁              ▂
+  ██▁█▁█▁█▁█▁█▁█▁█▁█▁██▁█▁█▁█▁█▁█▁█▁█▁█▁█▇▁█▁█▁█▁█▁█▁█▁▄▁▅▁▇▆ █
+  7.82 μs      Histogram: log(frequency) by time       8.6 μs &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.</code></pre><p>Finally, let&#39;s benchmark the same computation if a full (dense) matrix is used to represent the derivative operator. This is obviously a bad idea but 🤷</p><pre><code class="language-julia hljs">doit(Di_full, &quot;Di_full:&quot;, du, u)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Di_full:
 BenchmarkTools.Trial: 10000 samples with 1 evaluation.
- Range (min … max):  257.698 μs … 505.398 μs  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     258.898 μs               ┊ GC (median):    0.00%
- Time  (mean ± σ):   259.408 μs ±   3.575 μs  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Range (min … max):  261.897 μs … 500.693 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     263.196 μs               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   263.812 μs ±   3.646 μs  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-      ▁▂▅█▇▇▂▁            ▁                          ▃▁▂        ▂
-  ▃▄▆▆████████▇▄▅▄▃▄▄▄▄██████▄▅▃▄▃▁▁▄▁▁▄▁▁▁▃▁▃▁▁▃▃▅▇███████▇▇▅▆ █
-  258 μs        Histogram: log(frequency) by time        266 μs &lt;
+      ▄▇█▇▇▅▄▁▂▁      ▁▁                     ▁▁ ▁▁▁             ▂
+  ▃▄▆▇███████████▇▇▇███████▆▃▆▄▃▁▁▃▁▁▁▃▃▁▁▆▆███████▇███▆▇▇▆▆▅▅▄ █
+  262 μs        Histogram: log(frequency) by time        272 μs &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.</code></pre><p>These results were obtained using the following versions.</p><pre><code class="language-julia hljs">using InteractiveUtils
 versioninfo()
@@ -237,7 +237,7 @@ Platform Info:
   LLVM: libLLVM-11.0.1 (ORCJIT, icelake-server)
       Status `~/work/SummationByPartsOperators.jl/SummationByPartsOperators.jl/docs/Manifest.toml`
   [aae01518] BandedMatrices v0.17.9
-  [9f78cca6] SummationByPartsOperators v0.5.27 `~/work/SummationByPartsOperators.jl/SummationByPartsOperators.jl`</code></pre><h2 id="Structure-of-Arrays-(SoA)-and-Array-of-Structures-(AoS)"><a class="docs-heading-anchor" href="#Structure-of-Arrays-(SoA)-and-Array-of-Structures-(AoS)">Structure-of-Arrays (SoA) and Array-of-Structures (AoS)</a><a id="Structure-of-Arrays-(SoA)-and-Array-of-Structures-(AoS)-1"></a><a class="docs-heading-anchor-permalink" href="#Structure-of-Arrays-(SoA)-and-Array-of-Structures-(AoS)" title="Permalink"></a></h2><p><a href="https://github.com/ranocha/SummationByPartsOperators.jl">SummationByPartsOperators.jl</a> tries to provide efficient support of</p><ul><li><code>StaticVector</code>s from <a href="https://github.com/JuliaArrays/StaticArrays.jl">StaticArrays.jl</a></li><li><a href="https://github.com/JuliaArrays/StructArrays.jl">StructArrays.jl</a></li></ul><p>To demonstrate this, let us set up some benchmark code.</p><pre><code class="language-julia hljs">using BenchmarkTools
+  [9f78cca6] SummationByPartsOperators v0.5.28 `~/work/SummationByPartsOperators.jl/SummationByPartsOperators.jl`</code></pre><h2 id="Structure-of-Arrays-(SoA)-and-Array-of-Structures-(AoS)"><a class="docs-heading-anchor" href="#Structure-of-Arrays-(SoA)-and-Array-of-Structures-(AoS)">Structure-of-Arrays (SoA) and Array-of-Structures (AoS)</a><a id="Structure-of-Arrays-(SoA)-and-Array-of-Structures-(AoS)-1"></a><a class="docs-heading-anchor-permalink" href="#Structure-of-Arrays-(SoA)-and-Array-of-Structures-(AoS)" title="Permalink"></a></h2><p><a href="https://github.com/ranocha/SummationByPartsOperators.jl">SummationByPartsOperators.jl</a> tries to provide efficient support of</p><ul><li><code>StaticVector</code>s from <a href="https://github.com/JuliaArrays/StaticArrays.jl">StaticArrays.jl</a></li><li><a href="https://github.com/JuliaArrays/StructArrays.jl">StructArrays.jl</a></li></ul><p>To demonstrate this, let us set up some benchmark code.</p><pre><code class="language-julia hljs">using BenchmarkTools
 using StaticArrays, StructArrays
 using LinearAlgebra, SparseArrays
 using SummationByPartsOperators
@@ -294,36 +294,36 @@ show(stdout, MIME&quot;text/plain&quot;(), @benchmark mul!($du, $D_sparse, $u))
 println(&quot;\nD_full&quot;)
 show(stdout, MIME&quot;text/plain&quot;(), @benchmark mul!($du, $D_full, $u))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Scalar case
 D_SBP
-BenchmarkTools.Trial: 10000 samples with 972 evaluations.
- Range (min … max):  76.028 ns … 98.970 ns  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     76.336 ns              ┊ GC (median):    0.00%
- Time  (mean ± σ):   76.404 ns ±  0.775 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+BenchmarkTools.Trial: 10000 samples with 971 evaluations.
+ Range (min … max):  76.929 ns … 156.950 ns  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     77.033 ns               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   77.188 ns ±   1.786 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-   ▅██▅ ▃▁                                                    ▂
-  ▅████▁███▃▁▅▄▁▁▁▁▁▁▄▆▁▇▇▆▆▁▄▄▁▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▃▁▄▇█▇▆ █
-  76 ns        Histogram: log(frequency) by time        81 ns &lt;
+  ▅█▅                                                          ▁
+  ███▇▄▄▁▁▁▁▁▁▁▁▁▁▁▅▇▇▆▅▁▄▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▃▁▁▁▁▁▁▁▁▃▄▁▆▅▆▆▆▆▆ █
+  76.9 ns       Histogram: log(frequency) by time      82.3 ns &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.
 D_sparse
 BenchmarkTools.Trial: 10000 samples with 196 evaluations.
- Range (min … max):  469.898 ns … 700.000 ns  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     478.056 ns               ┊ GC (median):    0.00%
- Time  (mean ± σ):   478.391 ns ±   7.648 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Range (min … max):  470.908 ns … 714.786 ns  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     474.485 ns               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   477.461 ns ±   7.479 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-                ▂▅█▇▂
-  ▂▂▂▂▂▃▃▅▆███▇██████▆▄▃▂▂▂▂▂▂▂▂▂▂▂▂▁▂▁▁▁▂▁▁▂▂▂▁▁▁▁▂▂▂▂▂▂▂▂▂▂▂▂ ▃
-  470 ns           Histogram: frequency by time          502 ns &lt;
+      █
+  ▂▃▅▇█▇▅▄▅▄▄▃▃▂▃▃▃▃▃▃▄▃▃▃▃▂▂▂▂▂▂▂▂▂▁▂▂▂▂▁▂▁▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ▃
+  471 ns           Histogram: frequency by time          510 ns &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.
 D_full
 BenchmarkTools.Trial: 10000 samples with 9 evaluations.
- Range (min … max):  2.322 μs …  7.278 μs  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     2.333 μs              ┊ GC (median):    0.00%
- Time  (mean ± σ):   2.341 μs ± 71.874 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Range (min … max):  2.333 μs …   8.867 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     2.344 μs               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   2.353 μs ± 149.368 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-                               █                           ▁
-  ▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▄█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█ ▂
-  2.32 μs        Histogram: frequency by time        2.34 μs &lt;
+                     █
+  ▇▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▆▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂ ▂
+  2.33 μs         Histogram: frequency by time        2.37 μs &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.</code></pre><p>Next, we use a plain array of structures (AoS) in the form of a two-dimensional array and our custom <code>mul_aos!</code> implementation that loops over each component, using <code>mul!</code> on <code>view</code>s. Here, the differences between the timings are less pronounced.</p><pre><code class="language-julia hljs">println(&quot;Plain Array of Structures&quot;)
 u_aos_plain = randn(T, 5, size(D_SBP, 1)); du_aos_plain = similar(u_aos_plain)
@@ -335,35 +335,35 @@ println(&quot;\nD_full&quot;)
 show(stdout, MIME&quot;text/plain&quot;(), @benchmark mul_aos!($du_aos_plain, $D_full, $u_aos_plain))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Plain Array of Structures
 D_SBP
 BenchmarkTools.Trial: 10000 samples with 10 evaluations.
- Range (min … max):  1.330 μs …  2.620 μs  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     1.350 μs              ┊ GC (median):    0.00%
- Time  (mean ± σ):   1.352 μs ± 35.380 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Range (min … max):  1.140 μs …  3.520 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     1.150 μs              ┊ GC (median):    0.00%
+ Time  (mean ± σ):   1.153 μs ± 45.211 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-                                        █
-  ▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▆▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▅ ▂
-  1.33 μs        Histogram: frequency by time        1.36 μs &lt;
+                               █
+  ▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▅█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▅ ▂
+  1.14 μs        Histogram: frequency by time        1.16 μs &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.
 D_sparse
 BenchmarkTools.Trial: 10000 samples with 8 evaluations.
- Range (min … max):  3.137 μs …  5.675 μs  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     3.212 μs              ┊ GC (median):    0.00%
- Time  (mean ± σ):   3.242 μs ± 83.858 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Range (min … max):  3.150 μs …   4.638 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     3.288 μs               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   3.278 μs ± 103.250 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-          ▃  █ ▇  ▂                  ▂  ▃
-  ▂▁▃▁▁▆▁▁█▁▁█▁█▁▁█▁▁▅▁▁▃▁▂▁▁▃▁▁▄▁▁█▁█▁▁█▁▁▇▁▁▄▁▂▁▁▂▁▁▂▁▁▂▁▂ ▃
-  3.14 μs        Histogram: frequency by time         3.4 μs &lt;
+       ▁  █ ▇  ▁                          ▂ ▂  ▁
+  ▂▁▄▁▁█▁▁█▁█▁▁█▁▁▄▁▃▁▁▂▁▁▂▁▂▁▁▂▁▁▃▁▅▁▁▇▁▁█▁█▁▁█▁▁█▁▅▁▁▄▁▁▃▁▂ ▃
+  3.15 μs         Histogram: frequency by time        3.42 μs &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.
 D_full
 BenchmarkTools.Trial: 10000 samples with 1 evaluation.
- Range (min … max):  11.999 μs …  53.100 μs  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     12.100 μs               ┊ GC (median):    0.00%
- Time  (mean ± σ):   12.154 μs ± 588.490 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Range (min … max):  11.999 μs …  44.499 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     12.200 μs               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   12.186 μs ± 493.032 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-                                █                            ▁
-  ▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▄█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█ ▂
-  12 μs           Histogram: frequency by time         12.2 μs &lt;
+                      ▄                   █
+  ▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▄█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▅█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▃ ▂
+  12 μs           Histogram: frequency by time         12.3 μs &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.</code></pre><p>Now, we use an array of structures (AoS) based on <code>reinterpret</code> and standard <code>mul!</code>. This is much more efficient for the implementation in SummationByPartsOperators.jl. In Julia v1.6, this is also more efficient for sparse matrices but less efficient for dense matrices (compared to the plain AoS approach with <code>mul_aos!</code> above).</p><pre><code class="language-julia hljs">println(&quot;Array of Structures (reinterpreted array)&quot;)
 u_aos_r = reinterpret(reshape, Vec5{T}, u_aos_plain); du_aos_r = similar(u_aos_r)
@@ -379,36 +379,36 @@ show(stdout, MIME&quot;text/plain&quot;(), @benchmark mul!($du_aos_r, $D_full, $
 D_SBP * u_aos_r ≈ D_sparse * u_aos_r ≈ D_full * u_aos_r = true
 reinterpret(reshape, T, du_aos_r) ≈ du_aos_plain = true
 D_SBP
-BenchmarkTools.Trial: 10000 samples with 501 evaluations.
- Range (min … max):  220.357 ns … 366.263 ns  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     221.156 ns               ┊ GC (median):    0.00%
- Time  (mean ± σ):   221.411 ns ±   2.371 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+BenchmarkTools.Trial: 10000 samples with 200 evaluations.
+ Range (min … max):  403.495 ns … 628.490 ns  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     404.995 ns               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   405.820 ns ±   5.159 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-   ▁▅██▆ ▁                                                      ▂
-  ▄█████▁█▄▆▅▃▁▁▁▁▁▁▃▄▁▇██▆▅▅▁▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▃▆▁▇████▆ █
-  220 ns        Histogram: log(frequency) by time        231 ns &lt;
+   ▁▆█▇▄                                                        ▂
+  ▃██████▄▁▁▁▁▁▁▁▁▁▄▆▆▇█▆▅▄▃▁▁▁▁▁▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▃▄▄▆▆▇▆▇▇▆▆ █
+  403 ns        Histogram: log(frequency) by time        432 ns &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.
 D_sparse
-BenchmarkTools.Trial: 10000 samples with 145 evaluations.
- Range (min … max):  697.924 ns …  1.774 μs  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     713.097 ns              ┊ GC (median):    0.00%
- Time  (mean ± σ):   724.401 ns ± 51.194 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+BenchmarkTools.Trial: 10000 samples with 112 evaluations.
+ Range (min … max):  759.804 ns …  1.332 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     782.125 ns              ┊ GC (median):    0.00%
+ Time  (mean ± σ):   785.333 ns ± 15.316 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-  ▃▇██▆▃  ▁▂▁                                                  ▂
-  ██████▇▇███▇▇▆▄▁▃▁▁▁▁▄▃▃▄▄▅▅▆▇▇▆▇▅▇▇▇▇▇▇▆▇▆▆▆▇▇▇▆▆▆▇▆▇▅▇▅▆▇▇ █
-  698 ns        Histogram: log(frequency) by time       994 ns &lt;
+           ▂ ▆▁█▁ ▄ ▁        ▃ ▁
+  ▂▂▂▂▃▃▅▄▅█▇██████▆█▅█▄▄▆▄▇▅█▆██▅▆▃▃▂▃▂▂▂▂▂▁▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ▄
+  760 ns          Histogram: frequency by time          837 ns &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.
 D_full
 BenchmarkTools.Trial: 10000 samples with 1 evaluation.
- Range (min … max):  16.999 μs …  51.899 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Range (min … max):  16.999 μs …  77.399 μs  ┊ GC (min … max): 0.00% … 0.00%
  Time  (median):     17.100 μs               ┊ GC (median):    0.00%
- Time  (mean ± σ):   17.102 μs ± 510.741 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Time  (mean ± σ):   17.133 μs ± 710.957 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-                                                             █
-  ▇▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█ ▂
-  17 μs           Histogram: frequency by time         17.1 μs &lt;
+                                █
+  ▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁██▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▃ ▂
+  17 μs           Histogram: frequency by time         17.2 μs &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.</code></pre><p>Next, we still use an array of structures (AoS), but copy the data into a plain <code>Array</code> instead of using the <code>reinterpret</code>ed versions. There is no significant difference to the previous version in this case.</p><pre><code class="language-julia hljs">println(&quot;Array of Structures&quot;)
 u_aos = Array(u_aos_r); du_aos = similar(u_aos)
@@ -424,35 +424,35 @@ show(stdout, MIME&quot;text/plain&quot;(), @benchmark mul!($du_aos, $D_full, $u_
 D_SBP * u_aos ≈ D_sparse * u_aos ≈ D_full * u_aos = true
 du_aos ≈ du_aos_r = true
 D_SBP
-BenchmarkTools.Trial: 10000 samples with 210 evaluations.
- Range (min … max):  359.043 ns … 527.614 ns  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     359.524 ns               ┊ GC (median):    0.00%
- Time  (mean ± σ):   360.179 ns ±   3.982 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+BenchmarkTools.Trial: 10000 samples with 200 evaluations.
+ Range (min … max):  407.995 ns … 642.995 ns  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     409.995 ns               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   410.683 ns ±   5.471 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-  ▁█▆                                                           ▁
-  ███▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▃▅▇▁▇▆▄▄▁▄▃▁▁▁▁▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▆▁▇▇▇▆ █
-  359 ns        Histogram: log(frequency) by time        381 ns &lt;
+    ▂█
+  ▂▃██▇▂▂▁▁▁▁▁▁▁▁▁▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ▂
+  408 ns           Histogram: frequency by time          439 ns &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.
 D_sparse
-BenchmarkTools.Trial: 10000 samples with 147 evaluations.
- Range (min … max):  695.231 ns … 972.102 ns  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     706.116 ns               ┊ GC (median):    0.00%
- Time  (mean ± σ):   706.421 ns ±   7.848 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+BenchmarkTools.Trial: 10000 samples with 118 evaluations.
+ Range (min … max):  754.229 ns …  1.169 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     764.398 ns              ┊ GC (median):    0.00%
+ Time  (mean ± σ):   766.374 ns ± 11.769 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-                 █▂▃▂
-  ▂▂▂▃▄▅▇▆▇▇▇▆▇▇██████▆▄▃▃▂▂▂▂▂▂▂▂▂▂▂▁▂▁▁▁▁▁▁▁▁▁▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ▃
-  695 ns           Histogram: frequency by time          739 ns &lt;
+         █▃▃▂▇
+  ▂▂▂▃▃▄▆█████▆▅▆▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▂▁▂▁▂▁▂▂▁▂▁▁▂▁▂▂▂▂▂▂▂▂▂▂▂▂▂ ▃
+  754 ns          Histogram: frequency by time          819 ns &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.
 D_full
 BenchmarkTools.Trial: 10000 samples with 1 evaluation.
- Range (min … max):  16.999 μs …  77.299 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Range (min … max):  16.999 μs …  77.699 μs  ┊ GC (min … max): 0.00% … 0.00%
  Time  (median):     17.100 μs               ┊ GC (median):    0.00%
- Time  (mean ± σ):   17.126 μs ± 713.099 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Time  (mean ± σ):   17.148 μs ± 863.889 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
                                 █
-  ▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▄█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂ ▂
+  ▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▆█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▄ ▂
   17 μs           Histogram: frequency by time         17.2 μs &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.</code></pre><p>Finally, let&#39;s look at a structure of arrays (SoA). Interestingly, this is slower than the array of structures we used above. On Julia v1.6, the sparse matrix representation performs particularly bad in this case.</p><pre><code class="language-julia hljs">println(&quot;Structure of Arrays&quot;)
@@ -470,35 +470,35 @@ D_SBP * u_soa ≈ D_sparse * u_soa ≈ D_full * u_soa = true
 du_soa ≈ du_aos = true
 D_SBP
 BenchmarkTools.Trial: 10000 samples with 203 evaluations.
- Range (min … max):  384.724 ns … 587.187 ns  ┊ GC (min … max): 0.00% … 0.00%
+ Range (min … max):  384.719 ns … 789.645 ns  ┊ GC (min … max): 0.00% … 0.00%
  Time  (median):     385.217 ns               ┊ GC (median):    0.00%
- Time  (mean ± σ):   385.922 ns ±   5.122 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Time  (mean ± σ):   386.946 ns ±  19.613 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-  ▄█▅▁                                                          ▁
-  ████▁▅▁▁▁▁▁▁▁▁▁▁▁▁▁▅▆▇▇▁▆▅▁▁▁▃▁▁▁▁▁▁▁▁▁▁▁▃▁▃▁▁▁▁▄▁▃▁▁▁▅▇▁▇▇▇▆ █
-  385 ns        Histogram: log(frequency) by time        408 ns &lt;
+  ▄█▇▂                                                          ▁
+  ████▅▁▁▁▁▁▁▁▁▁▁▁▁▃▁▇▇▇▆▅▁▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▄▆▁▇▇▇▇▆▅ █
+  385 ns        Histogram: log(frequency) by time        410 ns &lt;
 
  Memory estimate: 0 bytes, allocs estimate: 0.
 D_sparse
 BenchmarkTools.Trial: 10000 samples with 1 evaluation.
- Range (min … max):  265.098 μs …   6.562 ms  ┊ GC (min … max): 0.00% … 93.59%
- Time  (median):     279.898 μs               ┊ GC (median):    0.00%
- Time  (mean ± σ):   323.083 μs ± 422.828 μs  ┊ GC (mean ± σ):  9.02% ±  6.57%
+ Range (min … max):  276.597 μs …   6.694 ms  ┊ GC (min … max): 0.00% … 93.15%
+ Time  (median):     289.096 μs               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   332.865 μs ± 436.450 μs  ┊ GC (mean ± σ):  9.04% ±  6.57%
 
-      █▆
-  ▃▇█▇██▆▆▆▄▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▁▂▂▁▁▂▂▂▁▁▂▂▁▁▂▁▂▁▂▂▂▁▂▂▁▂▁▁▂▄▄▃▂▂ ▃
-  265 μs           Histogram: frequency by time          434 μs &lt;
+   ▁▅██▅▆▆▅▃▃▃▂▂▂▂▁▁▁▁▁▁                                  ▃▃▂   ▂
+  ▅███████████████████████▇▆▅▄▄▄▃▃▄▄▃▃▄▃▁▃▃▁▁▄▁▄▄▃▁▁▁▁▄▁▁██████ █
+  277 μs        Histogram: log(frequency) by time        443 μs &lt;
 
  Memory estimate: 328.25 KiB, allocs estimate: 10504.
 D_full
 BenchmarkTools.Trial: 10000 samples with 1 evaluation.
- Range (min … max):  201.698 μs …   6.615 ms  ┊ GC (min … max):  0.00% … 95.88%
- Time  (median):     219.998 μs               ┊ GC (median):     0.00%
- Time  (mean ± σ):   261.704 μs ± 417.718 μs  ┊ GC (mean ± σ):  11.00% ±  6.63%
+ Range (min … max):  210.297 μs …   6.718 ms  ┊ GC (min … max):  0.00% … 94.40%
+ Time  (median):     222.097 μs               ┊ GC (median):     0.00%
+ Time  (mean ± σ):   264.622 μs ± 439.747 μs  ┊ GC (mean ± σ):  11.46% ±  6.64%
 
-  ▂▆▆▅▅▆█▆▄▆▆▄▃▃▃▂▂▂▁▁▁▁▁▁                                ▁▄▄▂▁ ▂
-  ██████████████████████████▇▇▇▄▄▅▃▁▁▃▁▄▃▅▄▁▃▁▄▁▃▁▃▃▁▄▅▃▁▁█████ █
-  202 μs        Histogram: log(frequency) by time        368 μs &lt;
+   ▅██▇▆▆▆▅▄▃▃▃▂▁▂▁▁▁ ▁▁ ▁                                ▂▄▃▂  ▂
+  ██████████████████████████▆▇▅▅▆▅▄▃▁▁▅▄▅▁▃▃▃▅▁▃▁▁▄▃▁▃▁▄▅▆█████ █
+  210 μs        Histogram: log(frequency) by time        369 μs &lt;
 
  Memory estimate: 328.25 KiB, allocs estimate: 10504.</code></pre><p>These results were obtained using the following versions.</p><pre><code class="language-julia hljs">using InteractiveUtils
 versioninfo()
@@ -514,6 +514,6 @@ Platform Info:
   LIBM: libopenlibm
   LLVM: libLLVM-11.0.1 (ORCJIT, icelake-server)
       Status `~/work/SummationByPartsOperators.jl/SummationByPartsOperators.jl/docs/Manifest.toml`
-  [90137ffa] StaticArrays v1.5.11
+  [90137ffa] StaticArrays v1.5.12
   [09ab397b] StructArrays v0.6.14
-  [9f78cca6] SummationByPartsOperators v0.5.27 `~/work/SummationByPartsOperators.jl/SummationByPartsOperators.jl`</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../applications/">« Applications &amp; references</a><a class="docs-footer-nextpage" href="../api_reference/">API reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Monday 26 December 2022 05:02">Monday 26 December 2022</span>. Using Julia version 1.6.7.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+  [9f78cca6] SummationByPartsOperators v0.5.28 `~/work/SummationByPartsOperators.jl/SummationByPartsOperators.jl`</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../applications/">« Applications &amp; references</a><a class="docs-footer-nextpage" href="../api_reference/">API reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Saturday 31 December 2022 11:58">Saturday 31 December 2022</span>. Using Julia version 1.6.7.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
